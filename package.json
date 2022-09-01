@@ -1,0 +1,19 @@
+{
+  "name": "highway-sign-portal-hugo",
+  "version": "0.0.1",
+  "description": "Road Sign Pictures CMS In Hugo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "bulma": "^0.9.4"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.1.2",
+    "install": "^0.13.0",
+    "npm": "^8.17.0"
+  }
+}

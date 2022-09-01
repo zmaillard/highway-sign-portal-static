@@ -1,0 +1,106 @@
+
+{{ define "main" }}
+
+{{ $stateHighways := newScratch }}
+{{ $relatedHighways := newScratch }}
+{{ $placeHighways := newScratch }}
+
+{{ range .Pages }}
+{{ range .Params.highways }}
+{{ $cur := $relatedHighways.Get "highways" }}
+{{ if (and $cur (isset $cur .)) }}
+{{ $relatedHighways.SetInMap "highways" . (add (index $cur .) 1) }}
+{{ else }}
+{{ $relatedHighways.SetInMap "highways" . 1 }}
+{{ end }}
+{{ end}}
+
+{{ range .Params.states }}
+{{ $cur := $stateHighways.Get "states" }}
+{{ if (and $cur (isset $cur .)) }}
+{{ $stateHighways.SetInMap "states" . (add (index $cur .) 1) }}
+{{ else }}
+{{ $stateHighways.SetInMap "states" . 1 }}
+{{ end }}
+{{ end}}
+
+{{ range .Params.places }}
+{{ $cur := $placeHighways.Get "places" }}
+{{ if (and $cur (isset $cur .)) }}
+{{ $placeHighways.SetInMap "places" . (add (index $cur .) 1) }}
+{{ else }}
+{{ $placeHighways.SetInMap "places" . 1 }}
+{{ end }}
+{{ end}}
+
+{{end}}
+
+<div class="columns body-columns">
+    <div class="column is-quarter is-mobile">
+        <div class="tile is-ancestor">
+            <div class="tile is-vertical is-parent">
+                <div class="tile is-child">
+                    <p class="menu-label">Filter by States</p>
+                    <ul class="menu-list">
+                        {{range $cnt,$val := $stateHighways.Get "states"}}
+                        {{ $path := printf "/%s/%s" "states" ($cnt | urlize) }}
+                        {{ with $.Site.GetPage $path }}
+                        <a href="{{.RelPermalink}}">
+                            <li class="is-size-6">{{.Params.stateName}}
+                                <span class="is-size-7 tag is-rounded">{{$val}}</span>
+                            </li>
+                        </a>
+                        {{ end }}
+                        {{ end }}
+                    </ul>
+                </div>
+                <div class="tile is-child">
+                    <p class="menu-label">Filter by Related Highway</p>
+                    <ul class="menu-list">
+                        {{range $cnt,$val := $relatedHighways.Get "highways"}}
+                        {{ $path := printf "/%s/%s" "highways" ($cnt | urlize) }}
+                        {{ with $.Site.GetPage $path }}
+                        <a href="{{.RelPermalink}}">
+                            <li class="is-size-6">{{.Params.name}}
+                                <span class="is-size-7 tag is-rounded">{{$val}}</span>
+                            </li>
+                        </a>
+                        {{ end }}
+                        {{ end }}
+                    </ul>
+                </div>
+                <div class="tile is-child">
+                    <p class="menu-label">Filter by Places</p>
+                    <ul class="menu-list">
+                        {{range $cnt,$val := $placeHighways.Get "places"}}
+                        {{ $path := printf "/%s/%s" "places" ($cnt | urlize) }}
+                        {{ with $.Site.GetPage $path }}
+                        {{ $placePage := . }}
+                        {{ $place := split .Title "|"  }}
+                        {{ with index $place 0 }}
+                        <a href="{{$placePage.RelPermalink}}">
+                            <li class="is-size-6">{{.}}
+                                <span class="is-size-7 tag is-rounded">{{$val}}</span>
+                            </li>
+                        </a>
+                        {{ end }}
+                        {{ end }}
+                        {{ end }}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="column is-half infinite-scroll">
+        <h3 class="title is-3 has-text-centered">Signs From {{ .Page.Params.name }}</h1>
+            <div class="image-list">
+                {{ range .Paginator.Pages }}
+                {{ partial "widgets/signlist.html" . }}
+                <!--<li hugo-nav="{{ .RelPermalink}}"><a href="{{ .Permalink}}">{{ .LinkTitle }}</a></li>-->
+                {{ end }}
+            </div>
+            {{ template "_internal/pagination.html" . }}
+    </div>
+    <div class="column is-quarter is-mobile"></div>
+</div>
+{{ end }}

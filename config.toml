@@ -1,0 +1,22 @@
+baseURL = 'https://preview.roadsign.pictures'
+languageCode = 'en-us'
+title = 'Roadsign Pictures'
+ignoreErrors = ["error-output-taxonomy"]
+
+[taxonomies]
+  tag = 'tags'
+  highway = 'highways'
+  country = 'countries'
+  state = 'states'
+  county = 'counties'
+  highwaytype = 'highwaytypes'
+  alaskahighway = 'alaskaHighways'
+  oregonhighway = 'oregonHighways'
+  place = 'places'
+
+[outputFormats]
+  [outputFormats.browse]
+    path = 'browse'
+    mediaType = 'text/html'
+    isHTML = true
+    permalinkable = true

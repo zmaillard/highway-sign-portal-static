@@ -1,0 +1,130 @@
+{{ define "main" }}
+{{ $elements := split .Page.Title "|" }}
+
+{{ $stateHighways := newScratch }}
+
+{{ $fullname := .Page.Params.statename }}
+{{ $statename := .Page.Params.name }}
+{{ $highwayTypes := slice }}
+{{ range .Pages }}
+{{ $highwayTypes = $highwayTypes | append .Params.highwaytypes}}
+{{ range .Params.highways }}
+{{ $cur := $stateHighways.Get "highways" }}
+{{ if (and $cur (isset $cur .)) }}
+{{ $stateHighways.SetInMap "highways" . (add (index $cur .) 1) }}
+{{ else }}
+{{ $stateHighways.SetInMap "highways" . 1 }}
+{{ end }}
+{{ end}}
+{{end}}
+{{ $highwayTypesUniq := uniq $highwayTypes }}
+<section class="section">
+    <div class="container-top">
+        <h3 class="title is-3">Signs From {{.Page.Params.statename}}</h3>
+        <section class="hero">
+            <figure class="image is-4by3 width">
+                {{ $path := printf "/%s/%s" "sign" .Page.Params.featuredimage }}
+                {{ with $.Site.GetPage $path }}
+                <a href="{{.RelPermalink}}">
+                    <img src="https://sign.sagebrushgis.com/{{.Params.imageid}}/{{.Params.imageid}}_l.jpg"
+                        alt="{{.Params.title}}" style="opacity: 1; transition: opacity 0.15s linear 0s;" />
+                </a>
+
+
+                {{end }}
+            </figure>
+        </section>
+        {{ $statepath := printf "/%s/%s" "states" ($statename | urlize) }}
+        {{ with $.Site.GetPage $statepath }}
+        <a class="has-text-weight-semibold" href="{{.RelPermalink}}">View All Signs For {{$fullname}}</a>
+        <span> or browse by an option below:</span>
+        {{end}}
+        <section class="section">
+            <div class="container">
+                <div class="tile is-ancestor">
+                    <div class="tile">
+                        <ul>
+                            {{ range $taxonomyName, $taxonomy := $.Site.Taxonomies.counties.Alphabetical }}
+                            {{ $countypath := printf "/%s/%s" "counties" $taxonomy.Term }}
+                            {{ with $.Site.GetPage $countypath }}
+
+                            {{ $elements := split .Page.Title "|" }}
+                            {{ $countyName := (index $elements 0)}}
+                            {{ $countyState := (index $elements 1)}}
+                            {{ if (eq $countyState $fullname) }}
+                            <li>
+                                <a class="is-size-5" href="{{.RelPermalink}}">
+                                    {{$countyName}}
+
+                                    <span class="is-size-7 tag is-rounded">{{ len .Pages }}</span>
+                                </a>
+
+                            </li>
+                            {{end }}
+                            {{ end }}
+                            {{ end }}
+                        </ul>
+                    </div>
+
+
+                    <div class="tile is-parent is-vertical">
+                        {{range $idx, $typ := $highwayTypesUniq }}
+                        {{ if eq (mod $idx 2) 0 }}
+                        <article class="tile is-child box">
+                            <p class="title is-size-5">{{ $typ }}</p>
+                            <ul>
+                                {{range $cnt,$val := $stateHighways.Get "highways"}}
+                                {{ $path := printf "/%s/%s" "highways" ($cnt | urlize) }}
+                                {{ with $.Site.GetPage $path }}
+                                {{ if eq .Params.highwaytype $typ }}
+                                <li><a href="{{.RelPermalink}}"><img class="shield-padding"
+                                            onerror="this.onerror=null; this.remove();" 
+                                            src="https://shield.sagebrushgis.com/Shields/20x/{{ .Params.imagename }}"
+                                            alt="{{ .Params.name }}">
+                                        {{.Params.name}}
+                                        <span class="is-size-7 tag is-rounded">{{$val}}</span>
+                                    </a>
+                                </li>
+                                {{ end }}
+                                {{ end }}
+                                {{ end }}
+                            </ul>
+                        </article>
+                        {{ end }}
+                        {{ end }}
+                    </div>
+
+                    {{ if ge (len $highwayTypesUniq ) 1 }}
+                    <div class="tile is-parent is-vertical">
+                        {{range $idx, $typ := $highwayTypesUniq }}
+                        {{ if eq (mod $idx 2) 1 }}
+                        <article class="tile is-child box">
+                            <p class="title is-size-5">{{ $typ }}</p>
+                            <ul>
+                                {{range $cnt,$val := $stateHighways.Get "highways"}}
+                                {{ $path := printf "/%s/%s" "highways" ($cnt | urlize) }}
+                                {{ with $.Site.GetPage $path }}
+                                {{ if eq .Params.highwaytype $typ }}
+                                <li><a href="{{.RelPermalink}}"><img class="shield-padding"
+                                            onerror="this.onerror=null; this.remove();" 
+                                            src="https://shield.sagebrushgis.com/Shields/20x/{{ .Params.imagename }}"
+                                            alt="{{ .Params.name }}">
+                                        {{.Params.name}}
+                                        <span class="is-size-7 tag is-rounded">{{$val}}</span>
+                                    </a>
+                                </li>
+                                {{ end }}
+                                {{ end }}
+                                {{ end }}
+                            </ul>
+                        </article>
+                        {{ end }}
+                        {{ end }}
+                    </div>
+                    {{ end }}
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
+{{ end }}

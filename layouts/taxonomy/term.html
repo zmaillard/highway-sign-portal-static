@@ -1,0 +1,16 @@
+{{ define "main" }}
+
+<div class="columns body-columns">
+    <div class="column is-quarter is-mobile"></div>
+    <div class="column is-half infinite-scroll">
+        <h3 class="title is-3 has-text-centered">Signs From {{ .Page.Params.name }}</h1>
+            <div class="image-list">
+                {{ range .Paginator.Pages }}
+                {{ partial "widgets/signlist.html" . }}
+                <!--<li hugo-nav="{{ .RelPermalink}}"><a href="{{ .Permalink}}">{{ .LinkTitle }}</a></li>-->
+                {{ end }}
+            </div>
+            {{ template "_internal/pagination.html" . }}
+    </div>
+</div>
+{{ end }}

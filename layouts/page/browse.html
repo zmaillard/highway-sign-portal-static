@@ -1,0 +1,75 @@
+{{ define "main" }}
+<section class="section">
+    <div class="browse-page">
+        {{ range .Params.browseCountries }}
+        {{ $countryName := .name }}
+
+        {{ $countrySlug := cond (isset . "slug") .slug (urlize .name) }}
+
+        <div>
+            <h3 class="title is-3">{{ $countryName }} </h3>
+            {{ if .showDetails }}
+            <h2 class="subtitle">Browse By State</h3>
+                <div class="columns is-multiline is-mobile">
+                    {{ with $.Site.GetPage "states"}}
+                    {{ range .Data.Terms.Alphabetical }}
+                    {{ $path := printf "/%s/%s" "states" (.Name | urlize) }}
+                    {{ with $.Site.GetPage $path }}
+                    {{ if and (eq .Params.country $countryName) (isset .Params "featuredimage") }}
+                    <div class="column is-one-quarter browse-grid-text">
+                        <div class="thumbnail">
+                            <img
+                                src="https://sign.sagebrushgis.com/{{.Params.featuredImage}}/{{.Params.featuredImage}}_s.jpg" />
+                            <div class="caption is-text-overflow">{{.Params.stateName}} <span
+                                    class="is-size-7 tag is-rounded">{{len .Pages}}</span></div>
+                        </div>
+                    </div>
+                    {{ end }}
+                    {{ end }}
+                    {{ end }}
+                    {{ end}}
+                </div>
+                <div class="is-divider"></div>
+                <h2 class="subtitle">Browse By Highway</h3>
+                    <div class="columns is-multiline is-mobile">
+                        {{ range $taxonomyName, $taxonomy := $.Site.Taxonomies.highwaytypes.Alphabetical }}
+
+                        
+                        {{ if and (eq $taxonomy.Page.Params.country $countryName) (isset $taxonomy.Page.Params "featuredimage") }}
+                        <div class="column is-one-quarter browse-grid-text">
+                            <div class="thumbnail">
+                                <img
+                                    src="https://sign.sagebrushgis.com/{{$taxonomy.Page.Params.featuredImage}}/{{$taxonomy.Page.Params.featuredImage}}_s.jpg" />
+                                <div class="caption is-text-overflow">{{$taxonomy.Page.Params.name}} <span
+                                        class="is-size-7 tag is-rounded">{{ len $taxonomy.Pages }}</span></div>
+                            </div>
+                        </div>
+                        {{ end }}
+                        {{ end }}
+
+                    </div>
+
+                    {{ else }}
+                    <div class="columns is-multiline is-mobile">
+                        {{ $path := printf "/%s/%s" "countries" $countrySlug }}
+                        {{ with $.Site.GetPage $path }}
+                        <script>console.debug("{{ . }}")</script>
+                        <div class="column is-one-quarter browse-grid-text">
+                            <div class="thumbnail">
+                                <a href="{{.RelPermalink}}">
+                                    <img
+                                        src="https://sign.sagebrushgis.com/{{.Params.featuredImage}}/{{.Params.featuredImage}}_s.jpg" />
+                                </a>
+                                <div class="caption is-text-overflow"><span class="is-size-7 tag is-rounded">{{len
+                                        .Pages}}</span></div>
+                            </div>
+                        </div>
+                        {{ end}}
+                    </div>
+                    {{ end }}
+
+        </div>
+        {{ end }}
+    </div>
+</section>
+{{ end }}

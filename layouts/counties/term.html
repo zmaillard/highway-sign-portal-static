@@ -1,0 +1,16 @@
+{{ define "main" }}
+{{ $elements := split .Page.Title "|" }}
+
+{{ $fullname := printf "%s, %s" (index $elements 0) (index $elements 1 )}}
+<div class="columns body-columns">
+    <div class="column is-half infinite-scroll is-offset-one-quarter">
+        <h3 class="title is-3 has-text-centered">Signs From {{ $fullname }}</h1>
+            <div class="image-list">
+                {{ range .Paginator.Pages }}
+                {{ partial "widgets/signlist.html" . }}
+                {{ end }}
+            </div>
+    {{ template "_internal/pagination.html" . }}
+    </div>
+</div>
+{{ end }}
