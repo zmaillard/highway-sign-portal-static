@@ -1,3 +1,108 @@
+{{ define "header"}}
+
+{{ $flickityCss := resources.Get "flickity/flickity.min.css" }}
+{{ $flickityJs := resources.Get "flickity/flickity.pkgd.min.js" }}
+<link rel="stylesheet" href="{{ $flickityCss.Permalink }} ">
+<script src="{{ $flickityJs.Permalink}}"></script>
+{{ end }}
 {{ define "main" }}
-placeholder
+<section>
+    <div class="container">
+        <div class="columns is-multiline">
+            <div class="column is-12">
+                <h1 class="title has-text-centered">roadsign.pictures</h1>
+                <hr>
+                <h2 class="subtitle has-text-centered">A gallery of road sign photographs taken across North America
+                </h2>
+            </div>
+</div>
+</div>
+</section>
+<section>
+    <div class="container">
+        <div class="main-carousel">
+            {{ range $idx, $taxonomy := $.Site.Taxonomies.states.Alphabetical }}
+            {{ $statepath := printf "/%s/%s" "states" $taxonomy.Term }}
+            {{ with $.Site.GetPage $statepath }}
+            {{ if .Params.featuredImage}}
+
+            {{ $signPath := printf "/%s/%s" "sign" .Params.featuredimage}}
+            {{ with $.Site.GetPage $signPath }}
+            <div class="item-{{$idx}}">
+                <figure class="image widthis-4by3"><a href="{{ .RelPermalink }}">
+                        <img src="https://sign.sagebrushgis.com/{{ .Params.imageid }}/{{ .Params.imageid}}_m.jpg"
+                            alt="{{ .Params.title }}">
+                    </a>
+                </figure>
+            </div>
+            {{ end }}
+            {{ end }}
+            {{ end }}
+            {{ end }}
+        </div>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <div class="columns is-multiline">
+            <div class="column has-text-centered is-3"><a href="/browse"><svg role="img"
+                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" aria-hidden="true"
+                        class="svg-inline--fa fa-images fa-w-18 fa-fw fa-3x">
+                        <path fill="currentColor"
+                            d="M480 416v16c0 26.51-21.49 48-48 48H48c-26.51 0-48-21.49-48-48V176c0-26.51 21.49-48 48-48h16v208c0 44.112 35.888 80 80 80h336zm96-80V80c0-26.51-21.49-48-48-48H144c-26.51 0-48 21.49-48 48v256c0 26.51 21.49 48 48 48h384c26.51 0 48-21.49 48-48zM256 128c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-96 144l55.515-55.515c4.686-4.686 12.284-4.686 16.971 0L272 256l135.515-135.515c4.686-4.686 12.284-4.686 16.971 0L512 208v112H160v-48z">
+                        </path>
+                    </svg>
+                    <hr>
+                    <h2 class="subtitle">Browse for signs by Country, State, or Highway</h2>
+                </a></div>
+            <div class="column has-text-centered is-3"><a href="/random"><svg role="img"
+                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true"
+                        class="svg-inline--fa fa-random fa-w-16 fa-fw fa-3x">
+                        <path fill="currentColor"
+                            d="M504.971 359.029c9.373 9.373 9.373 24.569 0 33.941l-80 79.984c-15.01 15.01-40.971 4.49-40.971-16.971V416h-58.785a12.004 12.004 0 0 1-8.773-3.812l-70.556-75.596 53.333-57.143L352 336h32v-39.981c0-21.438 25.943-31.998 40.971-16.971l80 79.981zM12 176h84l52.781 56.551 53.333-57.143-70.556-75.596A11.999 11.999 0 0 0 122.785 96H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12zm372 0v39.984c0 21.46 25.961 31.98 40.971 16.971l80-79.984c9.373-9.373 9.373-24.569 0-33.941l-80-79.981C409.943 24.021 384 34.582 384 56.019V96h-58.785a12.004 12.004 0 0 0-8.773 3.812L96 336H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h110.785c3.326 0 6.503-1.381 8.773-3.812L352 176h32z">
+                        </path>
+                    </svg>
+                    <hr>
+                    <h2 class="subtitle">Sign randomly picked from the gallery</h2>
+                </a></div>
+            <div class="column has-text-centered is-3"><a href="/nearby"><svg role="img"
+                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" aria-hidden="true"
+                        class="svg-inline--fa fa-map-marker-alt fa-w-12 fa-fw fa-3x">
+                        <path fill="currentColor"
+                            d="M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0zM192 272c44.183 0 80-35.817 80-80s-35.817-80-80-80-80 35.817-80 80 35.817 80 80 80z">
+                        </path>
+                    </svg>
+                    <hr>
+                    <h2 class="subtitle">Show signs found near your location</h2>
+                </a></div>
+            <div class="column has-text-centered is-3"><a href="/search"><svg role="img"
+                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true"
+                        class="svg-inline--fa fa-search fa-w-16 fa-fw fa-3x">
+                        <path fill="currentColor"
+                            d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z">
+                        </path>
+                    </svg>
+                    <hr>
+                    <h2 class="subtitle">Search for Signs</h2>
+                </a></div>
+        </div>
+    </div>
+</section>
+{{ end }}
+{{ define "footer"}}
+<script>
+    var elem = document.querySelector('.main-carousel');
+    var flkty = new Flickity(elem, {
+        draggable: false,
+        prevNextButtons: true,
+        pageDots: false,
+        freeScroll: true,
+        wrapAround: true,
+        autoPlay: true,
+        initialIndex: 1,
+        // options
+        //cellAlign: 'left',
+        //contain: true
+    });
+</script>
 {{ end }}

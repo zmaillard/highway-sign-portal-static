@@ -20,3 +20,13 @@ ignoreErrors = ["error-output-taxonomy"]
     mediaType = 'text/html'
     isHTML = true
     permalinkable = true
+
+
+[module]
+  [[module.mounts]]
+    source = "assets"
+    target = "assets"
+
+  [[module.mounts]]
+    source = "./node_modules/flickity/dist"
+    target = "./assets/flickity"

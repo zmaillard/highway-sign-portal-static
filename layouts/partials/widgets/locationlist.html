@@ -1,3 +1,4 @@
+{{ if .Params.places }}
 {{ with index .Params.places 0 }}
 {{ $fullPlaceName := . }}
 {{ $displayPlaceName := split  $fullPlaceName "|" }}
@@ -7,7 +8,9 @@
 <a class="button is-text is-marginless is-paddingless is-small" href="{{.RelPermalink}}">{{ index $displayPlaceName 0 }}</a>
 {{ end }}
 {{ end }}
+{{ end }}
 
+{{ if .Params.counties }}
 {{ with index .Params.counties 0 }}
 {{ $name := . }}
 {{ $displayPlaceName := split  $name "|" }}
@@ -16,7 +19,9 @@
 <a class="button is-text is-marginless is-paddingless is-small" href="{{.RelPermalink}}">{{ index $displayPlaceName 0 }}</a>
 {{ end }}
 {{ end }}
+{{ end }}
 
+{{ if .Params.states }}
 {{ with index .Params.states 0 }}
 {{ $statename := . }}
 {{ $displayStateName := split  $statename "|" }}
@@ -25,11 +30,14 @@
 <a class="button is-text is-marginless is-paddingless is-small" href="{{.RelPermalink}}">{{ index $displayStateName 0 }}</a>
 {{ end }}
 {{ end }}
+{{ end }}
 
+{{ if .Params.countries }}
 {{ with index .Params.countries 0 }}
 {{ $countryname := . }}
 {{ $path := printf "/%s/%s" "countries" ($countryname | urlize) }}
 {{ with $.Site.GetPage $path }}
 <a class="button is-text is-marginless is-paddingless is-small" href="{{.RelPermalink}}">{{ $countryname }}</a>
+{{ end }}
 {{ end }}
 {{ end }}
