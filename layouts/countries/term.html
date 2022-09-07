@@ -1,32 +1,33 @@
-{{ define "main" }}
-{{ $elements := split .Page.Params.name "|" }}
 
-{{ $highways := newScratch }}
+{{ define "main" }}
+
+{{ $states := newScratch }}
 
 {{ range .Pages }}
-{{ range .Params.highways }}
-{{ $cur := $highways.Get "highways" }}
+{{ range .Params.states }}
+{{ $cur := $states.Get "states" }}
 {{ if (and $cur (isset $cur .)) }}
-{{ $highways.SetInMap "highways" . (add (index $cur .) 1) }}
+{{ $states.SetInMap "states" . (add (index $cur .) 1) }}
 {{ else }}
-{{ $highways.SetInMap "highways" . 1 }}
+{{ $states.SetInMap "states" . 1 }}
 {{ end }}
 {{ end}}
 {{ end }}
 
-{{ $fullname := index $elements 0 }}
+
+
 <div class="columns body-columns">
     <div class="column is-quarter is-mobile">
         <div class="tile is-ancestor">
             <div class="tile is-vertical is-parent">
                 <div class="tile is-child">
-                    <p class="menu-label">Filter by Highway</p>
+                    <p class="menu-label">Filter by States</p>
                     <ul class="menu-list">
-                        {{range $cnt,$val := $highways.Get "highways"}}
-                        {{ $path := printf "/%s/%s" "highways" ($cnt | urlize) }}
+                        {{range $cnt,$val := $states.Get "states"}}
+                        {{ $path := printf "/%s/%s" "states" ($cnt | urlize) }}
                         {{ with $.Site.GetPage $path }}
                         <a href="{{.RelPermalink}}">
-                            <li class="is-size-6">{{.Params.name}}
+                            <li class="is-size-6">{{.Params.stateName}}
                                 <span class="is-size-7 tag is-rounded">{{$val}}</span>
                             </li>
                         </a>
@@ -37,15 +38,15 @@
             </div>
         </div>
     </div>
-
-    <div class="column is-half infinite-scroll is-offset-one-quarter">
-        <h3 class="title is-3 has-text-centered">Signs From {{ $fullname }}</h1>
+    <div class="column is-half infinite-scroll">
+        <h3 class="title is-3 has-text-centered">Signs From {{ .Page.Params.name }}</h1>
             <div class="image-list">
                 {{ range .Paginator.Pages }}
                 {{ partial "widgets/signlist.html" . }}
+                <!--<li hugo-nav="{{ .RelPermalink}}"><a href="{{ .Permalink}}">{{ .LinkTitle }}</a></li>-->
                 {{ end }}
             </div>
-    {{ template "_internal/pagination.html" . }}
+            {{ template "_internal/pagination.html" . }}
     </div>
     <div class="column is-quarter is-mobile"></div>
 </div>
